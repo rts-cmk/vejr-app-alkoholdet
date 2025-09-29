@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Test({ locationName }) {
+export default function Data({ locationName }) {
   const BASE_KEY_URL = import.meta.env.VITE_API_KEY;
 
   const [location, setLocation] = useState(null);
