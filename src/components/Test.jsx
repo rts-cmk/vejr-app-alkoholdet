@@ -7,18 +7,18 @@ export default function Test() {
 
   const [data, setData] = useState(null);
 
-  // useEffect(() => {
-  //     fetch(
-  //         `http://api.openweathermap.org/geo/1.0/direct?q=roskilde&limit=11&appid=${BASE_KEY_URL}`
-  //       )
-  //       .then((response) => response.json())
-  //       .then((data) => setData(data));
-  //   }, []);
+  useEffect(() => {
+      fetch(
+          `http://api.openweathermap.org/geo/1.0/direct?q=roskilde&limit=11&appid=${BASE_KEY_URL}`
+        )
+        .then((response) => response.json())
+        .then((data) => setData(data));
+    }, []);
 
   useEffect(() => {
     fetch(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=44&lon=24&appid=${BASE_KEY_URL}`
-    ).then((response) => response.json().then((data) => console.log(data)));
+      `https://api.openweathermap.org/data/2.5/weather?lat=${data?.lat}&lon=${data?.lon}&appid=${BASE_KEY_URL}`
+    ).then(($response) => $response.json().then(($data) => console.log($data)));
   }, []);
 
   return (
