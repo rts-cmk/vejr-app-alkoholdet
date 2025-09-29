@@ -1,25 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 
-export default function Test({ locationName }) {
+const Test = forwardRef(({ locationName }, ref) => {
   const BASE_KEY_URL = import.meta.env.VITE_API_KEY;
-
-  const [location, setLocation] = useState(null);
 
   const [data, setData] = useState(null);
 
   const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
-    setLocation(locationName);
+    if (locationName) {
+      fetch(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=2&appid=${BASE_KEY_URL}`
+      )
+        .then((response) => response.json())
+        .then((data) => setData(data));
+    }
   }, [locationName]);
-
-  useEffect(() => {
-    fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=${BASE_KEY_URL}`
-    )
-      .then((response) => response.json())
-      .then((data) => setData(data));
-  }, [location]);
 
   useEffect(() => {
     if (data) {
@@ -37,6 +38,10 @@ export default function Test({ locationName }) {
 
   const getLocationName = () => {
     if (weatherData) {
+      console.log(
+        "weatherData in getLocationName:",
+        weatherData.map((locations) => locations?.name).join(", ")
+      );
       return weatherData.map((locations) => locations?.name).join(", ");
     }
   };
@@ -66,15 +71,17 @@ export default function Test({ locationName }) {
     }
   };
 
-  return (
-    <>
-      <img
-        src={getLocationIcon()}
-        alt={weatherData?.[0]?.weather?.[0]?.description}
-      />
-      <p>Description: {getLocationDescription()}</p>
-      <p>Location: {getLocationName()}</p>
-      <p>Temperature: {getLocationTemp()} °C</p>
-    </>
-  );
-}
+  // Exposing the functions
+  useImperativeHandle(ref, () => ({
+    getLocationName,
+    getLocationTemp,
+    getLocationIcon,
+    getLocationDescription,
+    weatherData,
+    data,
+  }));
+
+  return <></>;
+});
+
+export default Test;
