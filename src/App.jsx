@@ -14,7 +14,7 @@ export default function App() {
     }
   };
 
-  // Load initial city weather on mount
+  // Load initial city weather on mount lol
   useEffect(() => {
     fetchWeather(currentCity);
   }, []);
