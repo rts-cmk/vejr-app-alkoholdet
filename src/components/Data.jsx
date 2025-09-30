@@ -5,7 +5,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 
-const Test = forwardRef(({ locationName }, ref) => {
+const Data = forwardRef(({ locationName }, ref) => {
   const BASE_KEY_URL = import.meta.env.VITE_API_KEY;
 
   const [data, setData] = useState(null);
@@ -109,4 +109,4 @@ const Test = forwardRef(({ locationName }, ref) => {
   return <></>;
 });
 
-export default Test;
+export default Data;

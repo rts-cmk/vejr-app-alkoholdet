@@ -42,9 +42,9 @@ function App() {
           padding: "10px",
           border: "1px solid #ccc",
         }}>
-        <h2>Weather Info</h2>
         {weatherInfo.location && (
           <div>
+            <h2>Weather Info</h2>
             <p>Location: {weatherInfo.location}</p>
             <p>Temperature: {weatherInfo.temp} °C</p>
           </div>
