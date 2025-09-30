@@ -42,6 +42,13 @@ export default function App() {
           alt={item?.weather?.[0]?.description}
         />
       </div>
+      <div className="text-sm text-gray-500">
+        {new Date(item?.dt_txt).toLocaleDateString(undefined, {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        })}
+      </div>
     </li>
   ));
 
