@@ -15,7 +15,7 @@ const Test = forwardRef(({ locationName }, ref) => {
   useEffect(() => {
     if (locationName) {
       fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=2&appid=${BASE_KEY_URL}`
+        `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=1&appid=${BASE_KEY_URL}`
       )
         .then((response) => response.json())
         .then((data) => setData(data));
@@ -37,12 +37,37 @@ const Test = forwardRef(({ locationName }, ref) => {
   // Functions for fetching specific data on each location
 
   const getLocationName = () => {
-    if (weatherData) {
+    if (data && weatherData) {
+      // Pair each geocoding location with its corresponding weather location
+      const pairedNames = data.map((location, index) => {
+        const geoName = location?.name;
+        const weatherName = weatherData[index]?.name;
+
+        // If they're the same, just return one name
+        if (geoName === weatherName) {
+          return geoName;
+        }
+
+        // If they're different, combine them
+        return `${geoName}, ${weatherName}`;
+      });
+
       console.log(
-        "weatherData in getLocationName:",
-        weatherData.map((locations) => locations?.name).join(", ")
+        "Geo names:",
+        data.map((loc) => loc?.name)
       );
-      return weatherData.map((locations) => locations?.name).join(", ");
+      console.log(
+        "Weather names:",
+        weatherData.map((weather) => weather?.name)
+      );
+      console.log("Paired names:", pairedNames);
+
+      return pairedNames.join(" | ");
+    }
+
+    // Fallback to just geo names if weather data isn't ready yet
+    if (data) {
+      return data.map((location) => location?.name).join(", ");
     }
   };
 

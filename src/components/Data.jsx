@@ -15,7 +15,7 @@ const Test = forwardRef(({ locationName }, ref) => {
   useEffect(() => {
     if (locationName) {
       fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=2&appid=${BASE_KEY_URL}`
+        `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=1&appid=${BASE_KEY_URL}`
       )
         .then((response) => response.json())
         .then((data) => setData(data));
