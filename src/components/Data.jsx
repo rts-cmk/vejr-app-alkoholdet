@@ -25,7 +25,6 @@ export function useWeatherData() {
       }
 
       const { lat, lon } = geoData[0];
-      console.log(geoData);
 
       const weatherResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
