@@ -5,7 +5,7 @@ import { useWeatherData } from "./components/Data.jsx";
 export default function App() {
   const [searchInput, setSearchInput] = useState("");
   const [currentCity, setCurrentCity] = useState("Lyngby");
-  const { weatherInfo, isLoading, error, fetchWeather } = useWeatherData();
+  const { weatherInfo, foreCastInfo, isLoading, error, fetchWeather } = useWeatherData();
 
   const handleSearch = () => {
     if (searchInput.trim()) {
@@ -19,6 +19,7 @@ export default function App() {
   }, []);
 
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <SearchBar 
@@ -100,6 +101,72 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            {/* Forecast section */}
+            
+            {foreCastInfo && foreCastInfo.foreCastList && (
+              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+              <div className="text-center">
+                <div className="text-2xl mb-2">
+                <img className="text-2xl mb-2 w-32 h-32"
+                  src={`https://openweathermap.org/img/wn/${foreCastInfo?.foreCastList[0]?.weather?.[0].icon}@4x.png`}
+                  alt={weatherInfo.description}
+                />
+                </div> 
+                <div className="text-sm text-gray-500">{foreCastInfo?.foreCastList[0]?.dt_txt}</div>
+                <div className="text-lg font-semibold text-gray-800">
+                  {foreCastInfo?.foreCastList[0]?.main?.temp.toFixed(1)}°
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-2xl mb-2">
+                  <img className="text-2xl mb-2 w-32 h-32"
+                  src={`https://openweathermap.org/img/wn/${foreCastInfo?.foreCastList[8]?.weather?.[0].icon}@4x.png`}
+                  alt={weatherInfo.description}
+                /></div>
+                <div className="text-sm text-gray-500">{foreCastInfo?.foreCastList[8]?.dt_txt}</div>
+                <div className="text-lg font-semibold text-gray-800">
+                  {foreCastInfo?.foreCastList[8]?.main?.temp.toFixed(1)}°
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-2xl mb-2"><img className="text-2xl mb-2 w-32 h-32"
+                  src={`https://openweathermap.org/img/wn/${foreCastInfo?.foreCastList[16]?.weather?.[0].icon}@4x.png`}
+                  alt={weatherInfo.description}
+                /></div>
+                <div className="text-sm text-gray-500">{foreCastInfo?.foreCastList[16]?.dt_txt}</div>
+                <div className="text-lg font-semibold text-gray-800">
+                  {foreCastInfo?.foreCastList[16]?.main?.temp.toFixed(1)}°
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="text-2xl mb-2"><img className="text-2xl mb-2 w-32 h-32"
+                  src={`https://openweathermap.org/img/wn/${foreCastInfo?.foreCastList[24]?.weather?.[0].icon}@4x.png`}
+                  alt={foreCastInfo?.foreCastList[24]?.main?.temp.toFixed(1)}
+                /></div>
+                <div className="text-sm text-gray-500">{foreCastInfo?.foreCastList[24]?.dt_txt}</div>
+                <div className="text-lg font-semibold text-gray-800">
+                  {foreCastInfo?.foreCastList[24]?.main?.temp.toFixed(1)}°
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="text-2xl mb-2"><img className="text-2xl mb-2 w-32 h-32"
+                  src={`https://openweathermap.org/img/wn/${foreCastInfo?.foreCastList[32]?.weather?.[0].icon}@4x.png`}
+                  alt={foreCastInfo?.foreCastList[32]?.main?.temp.toFixed(1)}
+                /></div>
+                <div className="text-sm text-gray-500">{foreCastInfo?.foreCastList[32]?.dt_txt}</div>
+                <div className="text-lg font-semibold text-gray-800">
+                  {foreCastInfo?.foreCastList[32]?.main?.temp.toFixed(1)}°
+                </div>
+              </div>
+            </div>
+            )}
+
+
           </div>
         )}
       </div>
@@ -121,5 +188,7 @@ export default function App() {
         }
       `}</style>
     </div>
+
+    </>
   );
 }

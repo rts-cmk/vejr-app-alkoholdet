@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export function useWeatherData() {
   const [weatherInfo, setWeatherInfo] = useState(null);
+  const [foreCastInfo, setForeCastInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -11,6 +12,7 @@ export function useWeatherData() {
     setIsLoading(true);
     setError(null);
     setWeatherInfo(null);
+    setForeCastInfo(null);
 
     try {
       const geoResponse = await fetch(
@@ -31,6 +33,15 @@ export function useWeatherData() {
       );
       const weatherData = await weatherResponse.json();
 
+      const foreCastResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+      );
+
+
+      const foreCastData = await foreCastResponse.json();
+      console.log(foreCastData);
+     
+
       setWeatherInfo({
         location: geoData[0]?.name,
         // location: weatherData.name,
@@ -42,6 +53,13 @@ export function useWeatherData() {
         humidity: weatherData.main?.humidity,
         windSpeed: weatherData.wind?.speed,
       });
+
+      setForeCastInfo({
+        foreCastList: foreCastData.list,
+        city: foreCastData.city,
+        country: foreCastData.city?.country,
+      });
+
     } catch (err) {
       setError("Failed to fetch weather data. Please try again.");;
     } finally {
@@ -49,5 +67,5 @@ export function useWeatherData() {
     }
   };
 
-  return { weatherInfo, isLoading, error, fetchWeather };
+  return { weatherInfo, foreCastInfo, isLoading, error, fetchWeather };
 }

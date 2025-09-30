@@ -24,7 +24,7 @@ export function SearchBar({ searchInput, setSearchInput, onSearch }) {
           onClick={onSearch}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-xl transition-colors"
         >
-          🔍
+          Search
         </button>
       </div>
     </div>
