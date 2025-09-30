@@ -1,112 +1,57 @@
-import React, {
-  useEffect,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import { useState } from "react";
 
-const Data = forwardRef(({ locationName }, ref) => {
-  const BASE_KEY_URL = import.meta.env.VITE_API_KEY;
+export function useWeatherData() {
+  const [weatherInfo, setWeatherInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [data, setData] = useState(null);
+  const API_KEY = import.meta.env.VITE_API_KEY;
 
-  const [weatherData, setWeatherData] = useState(null);
+  const fetchWeather = async (cityName) => {
+    setIsLoading(true);
+    setError(null);
+    setWeatherInfo(null);
 
-  useEffect(() => {
-    if (locationName) {
-      fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${locationName}&limit=1&appid=${BASE_KEY_URL}`
-      )
-        .then((response) => response.json())
-        .then((data) => setData(data));
-    }
-  }, [locationName]);
+    try {
+      const geoResponse = await fetch(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`
+      );
+      const geoData = await geoResponse.json();
 
-  useEffect(() => {
-    if (data) {
-      Promise.all(
-        data.map((locations) =>
-          fetch(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${locations?.lat}&lon=${locations?.lon}&units=metric&appid=${BASE_KEY_URL}`
-          ).then((res) => res.json())
-        )
-      ).then((data) => setWeatherData(data));
-    }
-  }, [data]);
+      if (!geoData || geoData.length === 0) {
+        setError("City not found. Please try another city.");
+        setIsLoading(false);
+        return;
+      }
 
-  // Functions for fetching specific data on each location
+      const { lat, lon } = geoData[0];
 
-  const getLocationName = () => {
-    if (data && weatherData) {
-      // Pair each geocoding location with its corresponding weather location
-      const pairedNames = data.map((location, index) => {
-        const geoName = location?.name;
-        const weatherName = weatherData[index]?.name;
+      const weatherResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+      );
+      const weatherData = await weatherResponse.json();
 
-        // If they're the same, just return one name
-        if (geoName === weatherName) {
-          return geoName;
-        }
+      const forecastResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+      );
 
-        // If they're different, combine them
-        return `${geoName}, ${weatherName}`;
+      setWeatherInfo({
+        location: geoData[0]?.name,
+        // location: weatherData.name,
+        country: weatherData.sys?.country,
+        temp: Math.round(weatherData.main?.temp),
+        feelsLike: Math.round(weatherData.main?.feels_like),
+        description: weatherData.weather?.[0]?.description,
+        icon: weatherData.weather?.[0]?.icon,
+        humidity: weatherData.main?.humidity,
+        windSpeed: weatherData.wind?.speed,
       });
-
-      console.log(
-        "Geo names:",
-        data.map((loc) => loc?.name)
-      );
-      console.log(
-        "Weather names:",
-        weatherData.map((weather) => weather?.name)
-      );
-      console.log("Paired names:", pairedNames);
-
-      return pairedNames.join(" | ");
-    }
-
-    // Fallback to just geo names if weather data isn't ready yet
-    if (data) {
-      return data.map((location) => location?.name).join(", ");
+    } catch (err) {
+      setError("Failed to fetch weather data. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getLocationTemp = () => {
-    if (weatherData) {
-      return weatherData.map((locations) => locations?.main?.temp).join(", ");
-    }
-  };
-
-  const getLocationIcon = () => {
-    if (weatherData) {
-      return weatherData
-        .map(
-          (locations) =>
-            `http://openweathermap.org/img/wn/${locations?.weather?.[0]?.icon}@2x.png`
-        )
-        .join(", ");
-    }
-  };
-
-  const getLocationDescription = () => {
-    if (weatherData) {
-      return weatherData
-        .map((locations) => locations?.weather?.[0]?.description)
-        .join(", ");
-    }
-  };
-
-  // Exposing the functions
-  useImperativeHandle(ref, () => ({
-    getLocationName,
-    getLocationTemp,
-    getLocationIcon,
-    getLocationDescription,
-    weatherData,
-    data,
-  }));
-
-  return <></>;
-});
-
-export default Data;
+  return { weatherInfo, isLoading, error, fetchWeather };
+}
