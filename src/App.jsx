@@ -30,19 +30,19 @@ export default function App() {
 
   const forecastMap = forecast?.forecastList?.map((item, index) => (
     <li key={index} className="text-center">
-      <div className="text-lg font-semibold text-gray-800">
+      <div className="text-lg font-semibold text-white-800">
         {Math.round(item?.main?.temp)}°C
       </div>
-      <div className="text-sm text-gray-500 capitalize">
+      <div className="text-sm text-white-500 capitalize">
         {item?.weather?.[0]?.description}
       </div>
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-white-500">
         <img
           src={`https://openweathermap.org/img/wn/${item?.weather?.[0]?.icon}@2x.png`}
           alt={item?.weather?.[0]?.description}
         />
       </div>
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-white-500">
         {new Date(item?.dt_txt).toLocaleDateString(undefined, {
           weekday: "short",
           month: "short",
@@ -136,7 +136,7 @@ export default function App() {
             </div>
           </div>
         )}
-        <ul>{forecastMap}</ul>
+        <ul className="flex">{forecastMap}</ul>
       </div>
 
       <style>{`
