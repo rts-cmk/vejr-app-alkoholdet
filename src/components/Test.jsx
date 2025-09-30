@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 
 const Test = forwardRef(({ locationName }, ref) => {
   const BASE_KEY_URL = import.meta.env.VITE_API_KEY;

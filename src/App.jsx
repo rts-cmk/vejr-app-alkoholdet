@@ -5,7 +5,8 @@ import { useWeatherData } from "./components/Data.jsx";
 export default function App() {
   const [searchInput, setSearchInput] = useState("");
   const [currentCity, setCurrentCity] = useState("Lyngby");
-  const { weatherInfo, isLoading, error, fetchWeather } = useWeatherData();
+  const { weatherInfo, forecast, isLoading, error, fetchWeather } =
+    useWeatherData();
 
   const handleSearch = () => {
     if (searchInput.trim()) {
@@ -14,10 +15,35 @@ export default function App() {
     }
   };
 
-  // Load initial city weather on mount lol
+  // Load initial city weather on mount
   useEffect(() => {
     fetchWeather(currentCity);
   }, []);
+
+  // Debug forecast data
+  // console.log("Forecast state:", forecast);
+  // console.log("Forecast list length:", forecast?.forecastList?.length);
+  // if (forecast?.forecastList && forecast.forecastList.length > 0) {
+  //   console.log("First forecast item:", forecast.forecastList[0]);
+  //   console.log("First forecast temp:", forecast.forecastList[0]?.main?.temp);
+  // }
+
+  const forecastMap = forecast?.forecastList?.map((item, index) => (
+    <li key={index} className="text-center">
+      <div className="text-lg font-semibold text-gray-800">
+        {Math.round(item?.main?.temp)}°C
+      </div>
+      <div className="text-sm text-gray-500 capitalize">
+        {item?.weather?.[0]?.description}
+      </div>
+      <div className="text-sm text-gray-500">
+        <img
+          src={`https://openweathermap.org/img/wn/${item?.weather?.[0]?.icon}@2x.png`}
+          alt={item?.weather?.[0]?.description}
+        />
+      </div>
+    </li>
+  ));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex items-center justify-center p-4">
@@ -103,6 +129,7 @@ export default function App() {
             </div>
           </div>
         )}
+        <ul>{forecastMap}</ul>
       </div>
 
       <style>{`
